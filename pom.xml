@@ -1,0 +1,67 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  
+  <groupId>net.mekomsolutions</groupId>
+  <artifactId>ozonepro-distro-infra-395</artifactId>
+  <name>Ozone Pro Distribution - INFRA-395</name>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <parent>
+    <groupId>net.mekomsolutions</groupId>
+    <artifactId>ozone-distro</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  
+  <packaging>pom</packaging>
+
+  <developers>
+    <developer>
+      <name>Mekom Solutions</name>
+    </developer>
+  </developers>
+  <organization>
+    <name>Mekom Solutions</name>
+    <url>http://www.mekomsolutions.com</url>
+  </organization>
+
+  <properties>
+    <distro.flinkConfigDir>${distro.baseDir}/flink_config</distro.flinkConfigDir>
+    <distro.keycloakConfigDir>${distro.baseDir}/keycloak_config</distro.keycloakConfigDir>
+    <distro.odooconfigDir>${distro.baseDir}/odoo_config</distro.odooconfigDir>
+    
+    <!-- Ozone modules -->
+    <oauth2loginVersion>1.1.0-SNAPSHOT</oauth2loginVersion>
+    <datafilterVersion>2.1.0-SNAPSHOT</datafilterVersion>
+
+    <!-- Flink jobs -->
+    <ozoneFlinkVersion>1.0.0-SNAPSHOT</ozoneFlinkVersion>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>net.mekomsolutions.odoo</groupId>
+      <artifactId>auth_oauth_keycloak</artifactId>
+      <version>14.0.1.0.0-SNAPSHOT</version>
+      <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>org.openmrs.module</groupId>
+      <artifactId>oauth2login-omod</artifactId>
+      <version>${oauth2loginVersion}</version>
+      <type>jar</type>
+    </dependency>
+    <!-- In waiting for FILTER-12 to be fixed -->  
+    <!-- <dependency>
+      <groupId>org.openmrs.module</groupId>
+      <artifactId>datafilter-omod</artifactId>
+      <version>${datafilterVersion}</version>
+      <type>jar</type>
+    </dependency> -->
+  </dependencies>
+
+  <build>
+     
+
+ 
+  </build>
+</project>
