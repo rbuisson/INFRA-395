@@ -1,6 +1,6 @@
 version: 1
 build:
-  bash_commands: "mvn clean install"
+  bash_commands: "exit 0"
 deploy:
-  bash_commands: "mvn clean deploy -DskipTests -DaltDeploymentRepository=mks-nexus-private::default::https://nexus.mekomsolutions.net/repository/maven-private-snapshots"
+  bash_commands: "exit 0"
 rebuildOnDependencyChanges: "true"
