@@ -1,28 +1,29 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   
-  <groupId>net.mekomsolutions</groupId>
+  <groupId>com.ozonehis</groupId>
   <artifactId>ozonepro-distro-infra-395</artifactId>
   <name>Ozone Pro Distribution - INFRA-395</name>
   <version>1.0.0-SNAPSHOT</version>
 
   <parent>
-    <groupId>net.mekomsolutions</groupId>
+    <groupId>com.ozonehis</groupId>
     <artifactId>ozone-distro</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
   
   <packaging>pom</packaging>
 
+  <organization>
+    <name>Ozone HIS</name>
+    <url>https://www.ozone-his.com</url>
+  </organization>
   <developers>
     <developer>
-      <name>Mekom Solutions</name>
+        <name>Mekom Solutions</name>
+        <url>https://www.mekomsolutions.com</url>
     </developer>
   </developers>
-  <organization>
-    <name>Mekom Solutions</name>
-    <url>http://www.mekomsolutions.com</url>
-  </organization>
 
   <properties>
     <distro.flinkConfigDir>${distro.baseDir}/flink_config</distro.flinkConfigDir>
@@ -30,18 +31,19 @@
     <distro.odooconfigDir>${distro.baseDir}/odoo_config</distro.odooconfigDir>
     
     <!-- Ozone modules -->
-    <oauth2loginVersion>1.1.0-SNAPSHOT</oauth2loginVersion>
-    <datafilterVersion>2.1.0-SNAPSHOT</datafilterVersion>
+    <oauth2loginVersion>1.3.0-SNAPSHOT</oauth2loginVersion>
+    <datafilterVersion>2.1.0</datafilterVersion>
+    <odooAuthOauthKeycloakVersion>14.0.1.0.0</odooAuthOauthKeycloakVersion>
 
     <!-- Flink jobs -->
-    <ozoneFlinkVersion>1.0.0-SNAPSHOT</ozoneFlinkVersion>
+    <ozoneFlinkVersion>2.0.0</ozoneFlinkVersion>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>net.mekomsolutions.odoo</groupId>
       <artifactId>auth_oauth_keycloak</artifactId>
-      <version>14.0.1.0.0-SNAPSHOT</version>
+      <version>${odooAuthOauthKeycloakVersion}</version>
       <type>zip</type>
     </dependency>
     <dependency>
@@ -50,18 +52,100 @@
       <version>${oauth2loginVersion}</version>
       <type>jar</type>
     </dependency>
-    <!-- In waiting for FILTER-12 to be fixed -->  
-    <!-- <dependency>
+    <dependency>
       <groupId>org.openmrs.module</groupId>
       <artifactId>datafilter-omod</artifactId>
       <version>${datafilterVersion}</version>
       <type>jar</type>
-    </dependency> -->
+    </dependency>
   </dependencies>
 
   <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.8</version>
+        <executions>
+          <!-- OpenMRS modules -->
+          <execution>
+            <id>copy-omods</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <excludeTransitive>true</excludeTransitive>
+              <useBaseVersion>true</useBaseVersion>
+              <outputDirectory>${distro.openmrsModulesDir}</outputDirectory>
+              <!-- copying omods only -->
+              <includeTypes>omod</includeTypes>
+            </configuration>
+          </execution>
+          <!-- Ozone OS config -->
+          <execution>
+            <id>unpack-odoo-auth-oauth-keycloak</id>
+            <phase>package</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <excludeTransitive>true</excludeTransitive>
+              <useBaseVersion>true</useBaseVersion>
+              <outputDirectory>${distro.odooconfigDir}/addons/auth_oauth_keycloak</outputDirectory>
+              <includeArtifactIds>auth_oauth_keycloak</includeArtifactIds>
+            </configuration>
+          </execution>
+        </executions>
+
+      </plugin>
+
      
 
- 
+      <!-- packaging the distro as a installable/deployable file -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>package-distro-artifact</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <appendAssemblyId>false</appendAssemblyId>
+              <descriptors>
+                <descriptor>src/main/assembly/assembly.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
+
+  <repositories>
+    <repository>
+      <id>mks-nexus-public</id>
+      <url>https://nexus.mekomsolutions.net/repository/maven-public/</url>
+    </repository>
+    <repository>
+      <id>openmrs-repo</id>
+      <name>OpenMRS Nexus Repository</name>
+      <url>https://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+    </repository>
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 </project>
